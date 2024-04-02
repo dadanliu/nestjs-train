@@ -15,6 +15,7 @@ const users_module_1 = require("./users/users.module");
 const logger_middleware_1 = require("./components/middleware/logger.middleware");
 const users_controller_1 = require("./users/users.controller");
 const chat_module_1 = require("./chat/chat.module");
+const wechat_module_1 = require("./wechat/wechat.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -30,6 +31,7 @@ exports.AppModule = AppModule = __decorate([
             mongoose_1.MongooseModule.forRoot('mongodb://localhost/level0'),
             users_module_1.UsersModule,
             chat_module_1.ChatModule,
+            wechat_module_1.Wechat,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

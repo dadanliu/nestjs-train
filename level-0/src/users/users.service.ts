@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { User } from './user.schema';
-import { ERole, EStatus } from 'src/components/enums/role.enum';
+import { ERole, EStatus } from '../components/enums/role.enum';
 
 @Injectable()
 export class UsersService {

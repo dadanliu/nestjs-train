@@ -26,7 +26,7 @@
 import { Response } from 'express';
 import { UserDTO } from './user.dto';
 import { UsersService } from './users.service';
-import { AppService } from 'src/app.service';
+import { AppService } from '../app.service';
 export declare class UsersController {
     private readonly userService;
     private readonly appService;

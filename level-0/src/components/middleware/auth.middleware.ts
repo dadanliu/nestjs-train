@@ -1,12 +1,10 @@
 // 拦截器，检测当前身份是否是超管，如果不是直接拦截请求
 import {
-  ExecutionContext,
-  Inject,
   Injectable,
   NestMiddleware
 } from '@nestjs/common';
 import { NextFunction } from 'express';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../../users/users.service';
 import { isProjectManager } from '../enums/role.enum';
 import { Reflector } from '@nestjs/core';
 

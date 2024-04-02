@@ -7,12 +7,14 @@ import { UsersModule } from './users/users.module';
 import { LoggerMiddleware } from './components/middleware/logger.middleware';
 import { UsersController } from './users/users.controller';
 import { ChatModule } from './chat/chat.module';
+import { Wechat } from './wechat/wechat.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://localhost/level0'),
     UsersModule,
     ChatModule,
+    Wechat,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,7 +7,6 @@ import {
   Body,
   Res,
   HttpStatus,
-  UseFilters,
   UseGuards,
   Req
 } from '@nestjs/common';
@@ -15,13 +14,12 @@ import { Response } from 'express';
 
 import { UserDTO } from './user.dto';
 import { UsersService } from './users.service';
-import { HttpExceptionFilter } from '../components/filter/http-exception';
 import { CustomForbiddenException } from '../components/filter/forbidden';
 
 import { ParseIntPipe } from '../components/pipes/parseInt.pipe';
 import { RolesGuard } from '../components/guards/roles.guard';
 import { Roles } from '../components/decorators/roles.decorator';
-import { AppService } from 'src/app.service';
+import { AppService } from '../app.service';
 
 @Controller('users')
 @UseGuards(RolesGuard)
