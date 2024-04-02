@@ -14,17 +14,17 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
-const validation_pipe_1 = require("../components/pipes/validation.pipe");
 const user_dto_1 = require("./user.dto");
 const users_service_1 = require("./users.service");
-const http_exception_1 = require("../components/filter/http-exception");
 const forbidden_1 = require("../components/filter/forbidden");
 const parseInt_pipe_1 = require("../components/pipes/parseInt.pipe");
 const roles_guard_1 = require("../components/guards/roles.guard");
 const roles_decorator_1 = require("../components/decorators/roles.decorator");
+const app_service_1 = require("../app.service");
 let UsersController = class UsersController {
-    constructor(userService) {
+    constructor(userService, appService) {
         this.userService = userService;
+        this.appService = appService;
     }
     Login(res) {
         console.log('login');
@@ -33,6 +33,9 @@ let UsersController = class UsersController {
     getList() {
         return this.userService.getList();
     }
+    parseCookie(req) {
+        this.appService.parseCookie(req.cookies);
+    }
     getException() {
         throw new forbidden_1.CustomForbiddenException();
     }
@@ -40,13 +43,13 @@ let UsersController = class UsersController {
         return this.userService.getDetail(id);
     }
     addUser(param) {
-        this.userService.addUser(param);
+        return this.userService.addUser(param);
     }
     deleteUser(param) {
-        this.userService.deleteUser(param);
+        return this.userService.deleteUser(param);
     }
     modifyUser(param) {
-        this.userService.modifyUser(param);
+        return this.userService.modifyUser(param);
     }
 };
 exports.UsersController = UsersController;
@@ -63,8 +66,16 @@ __decorate([
     (0, common_1.HttpCode)(200),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Array)
+    __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getList", null);
+__decorate([
+    (0, common_1.Get)('parse'),
+    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "parseCookie", null);
 __decorate([
     (0, common_1.Get)('exception'),
     __metadata("design:type", Function),
@@ -77,12 +88,13 @@ __decorate([
     __param(0, (0, common_1.Query)('id', new parseInt_pipe_1.ParseIntPipe())),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", user_dto_1.UserDTO)
+    __metadata("design:returntype", Object)
 ], UsersController.prototype, "getDetail", null);
 __decorate([
     (0, common_1.Post)('add'),
-    (0, common_1.HttpCode)(204),
-    __param(0, (0, common_1.Body)(new validation_pipe_1.ValidationPipe())),
+    (0, roles_decorator_1.Roles)('admin'),
+    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_dto_1.UserDTO]),
     __metadata("design:returntype", void 0)
@@ -104,7 +116,7 @@ __decorate([
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
-    (0, common_1.UseFilters)(new http_exception_1.HttpExceptionFilter()),
-    __metadata("design:paramtypes", [users_service_1.UsersService])
+    __metadata("design:paramtypes", [users_service_1.UsersService,
+        app_service_1.AppService])
 ], UsersController);
 //# sourceMappingURL=users.controller.js.map

@@ -9,10 +9,10 @@ import {
   HttpStatus,
   UseFilters,
   UseGuards,
+  Req
 } from '@nestjs/common';
 import { Response } from 'express';
 
-import { ValidationPipe } from '../components/pipes/validation.pipe';
 import { UserDTO } from './user.dto';
 import { UsersService } from './users.service';
 import { HttpExceptionFilter } from '../components/filter/http-exception';
@@ -21,12 +21,16 @@ import { CustomForbiddenException } from '../components/filter/forbidden';
 import { ParseIntPipe } from '../components/pipes/parseInt.pipe';
 import { RolesGuard } from '../components/guards/roles.guard';
 import { Roles } from '../components/decorators/roles.decorator';
+import { AppService } from 'src/app.service';
 
 @Controller('users')
 @UseGuards(RolesGuard)
-@UseFilters(new HttpExceptionFilter())
+// @UseFilters(new HttpExceptionFilter())
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly appService: AppService
+  ) {}
 
   @Post('login')
   @Roles('admin')
@@ -37,8 +41,14 @@ export class UsersController {
 
   @Get('list')
   @HttpCode(200)
-  getList(): UserDTO[] {
+  getList(): Promise<any> {
     return this.userService.getList();
+  }
+
+  @Get('parse')
+  @HttpCode(200)
+  parseCookie(@Req() req) {
+    this.appService.parseCookie(req.cookies);
   }
 
   @Get('exception')
@@ -48,23 +58,24 @@ export class UsersController {
 
   @Get('detail')
   @HttpCode(200)
-  getDetail(@Query('id', new ParseIntPipe()) id: string): UserDTO {
+  getDetail(@Query('id', new ParseIntPipe()) id: string): any {
     return this.userService.getDetail(id);
   }
 
   @Post('add')
-  @HttpCode(204)
-  addUser(@Body(new ValidationPipe()) param: UserDTO) {
-    this.userService.addUser(param);
+  @Roles('admin')
+  @HttpCode(200)
+  addUser(@Body() param: UserDTO) {
+    return this.userService.addUser(param);
   }
 
   @Post('delete')
   deleteUser(@Body() param: UserDTO) {
-    this.userService.deleteUser(param);
+    return this.userService.deleteUser(param);
   }
 
   @Post('modify')
   modifyUser(@Body() param: UserDTO) {
-    this.userService.modifyUser(param);
+    return this.userService.modifyUser(param);
   }
 }

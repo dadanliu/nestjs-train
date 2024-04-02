@@ -1,4 +1,6 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -7,7 +9,11 @@ import { UsersController } from './users/users.controller';
 import { ChatModule } from './chat/chat.module';
 
 @Module({
-  imports: [UsersModule, ChatModule],
+  imports: [
+    MongooseModule.forRoot('mongodb://localhost/level0'),
+    UsersModule,
+    ChatModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

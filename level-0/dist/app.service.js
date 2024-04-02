@@ -12,6 +12,17 @@ let AppService = class AppService {
     getHello() {
         return 'Hello World!';
     }
+    parseCookie(cookies) {
+        console.log('cookies', cookies);
+        const ssoCookieKey = 'FOCUS_A_UDIG';
+        const sopCookieKey = 'sop_user_token';
+        const ssoCookieValue = cookies[ssoCookieKey];
+        const sopCookieValue = cookies[sopCookieKey];
+        const header = {
+            cookie: `${ssoCookieKey}=${ssoCookieValue};${sopCookieKey}=${sopCookieValue}`
+        };
+        console.log('header', header);
+    }
 };
 exports.AppService = AppService;
 exports.AppService = AppService = __decorate([

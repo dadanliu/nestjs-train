@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 let ChatController = class ChatController {
     constructor() { }
     async chat(req, res) {
+        console.log('chat');
         res.render('./Chat/chat', { title: '聊天室' });
     }
 };

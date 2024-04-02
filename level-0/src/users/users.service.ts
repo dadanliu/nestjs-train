@@ -1,42 +1,54 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
-const dataSet = [
-  { name: 'kobe', num: '24' },
-  { name: 'lebron', num: '23' },
-];
+import { User } from './user.schema';
+import { ERole, EStatus } from 'src/components/enums/role.enum';
 
 @Injectable()
 export class UsersService {
+  constructor(
+    @InjectModel(User.name)
+    private userModel: Model<User>
+  ) {}
+
   sayHello(): string {
     return 'say Hello World!';
   }
 
-  getList() {
-    console.log('dataSet', dataSet);
-    return dataSet;
+  async getList() {
+    const users = await this.userModel.find().exec();
+    return users;
   }
 
-  getDetail(num) {
-    const info = dataSet.find((d) => d.num == num);
+  async getDetail(num) {
+    const info = await this.userModel.find({ num }).exec();
     if (!info) {
       throw new HttpException('not found', 404);
     }
     return info;
   }
 
-  addUser(param) {
-    dataSet.push(param);
+  async addUser(param) {
+    const newUser = {
+      ...param,
+      status: ERole.normal,
+      role: EStatus.inUse
+    };
+    try {
+      const ret = await this.userModel.create(newUser);
+      return ret;
+    } catch (e) {}
   }
 
-  modifyUser(param) {
-    const idx = dataSet.findIndex((d) => d.num === param.num);
-    const modified = { ...dataSet[idx], ...param };
-    dataSet.splice(idx, 0, modified);
+  async modifyUser(param) {
+    console.log('modifyUser', param);
+    return await this.userModel
+      .findOneAndUpdate({ num: param.num }, param, { new: true })
+      .exec();
   }
 
-  deleteUser(param) {
-    const idx = dataSet.findIndex((d) => d.num === param.num);
-    console.log('deleteUser', param);
-    dataSet.splice(idx, 1);
+  async deleteUser(param) {
+    return await this.userModel.findOneAndDelete({ num: param.num }).exec();
   }
 }
